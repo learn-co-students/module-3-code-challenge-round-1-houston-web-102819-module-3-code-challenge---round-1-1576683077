@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     object.comments.forEach(function(comment){
       liTag = document.createElement('li')
-      deleteButton = document.createElement('button')
       liTag.innerText = comment.content
       ulTag.append(liTag)
       liTag.append(deleteButton)
