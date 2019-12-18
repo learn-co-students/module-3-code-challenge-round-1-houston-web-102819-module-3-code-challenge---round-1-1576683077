@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(function(response){
       return response.json()
     }).then(function(image){
-      
+
       let imageTag = document.getElementById('image')
       imageTag.setAttribute('src', image.url)
 
@@ -26,8 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
       let commentsList = document.getElementById('comments')
       image.comments.forEach(function(comment){
         let commentListItem = document.createElement('li')
+        commentListItem.setAttribute('id', comment.id)
         commentListItem.innerText = comment.content
         commentsList.append(commentListItem)
+
+        createDeleteBtn(commentListItem)
+
       })
 
       let likeBtn = document.getElementById('like_button')
@@ -51,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let commentInput = document.getElementById('comment_input')
         let commentsList = document.getElementById('comments')
         let commentListItem = document.createElement('li')
+        
         commentListItem.innerText = commentInput.value
         commentsList.append(commentListItem)
 
@@ -63,11 +68,28 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: {
             'Content-Type': 'application/json'
           }
+        }).then(function(response){
+          return response.json()
+        }).then(function(comment){
+          commentListItem.setAttribute('id', comment.id)
+          createDeleteBtn(commentListItem)
         })
 
         commentInput.value = ''
       })
     })
-  
-
 })
+
+let createDeleteBtn = function(commentListItem){
+  let commentDelete = document.createElement('button')
+  commentDelete.setAttribute('class', 'comment-delete')
+  commentDelete.innerText = 'Delete'
+  commentListItem.append(commentDelete)
+
+  commentDelete.addEventListener('click', function(){
+    commentListItem.remove()
+    fetch(`https://randopic.herokuapp.com/comments/${commentListItem.id}`, {
+      method: 'DELETE'
+    })
+  })
+}
